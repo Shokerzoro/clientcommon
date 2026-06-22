@@ -2,22 +2,28 @@
 include(cmake/sources.cmake)
 
 # Target
-add_library(clientcommon
-    ${CLIENTCOMMON_SOURCES}
-)
+if(CLIENTCOMMON_COMPILE_SOURCES)
+    add_library(clientcommon
+        ${CLIENTCOMMON_SOURCES}
+    )
+    set(CLIENTCOMMON_TARGET_SCOPE PUBLIC)
+else()
+    add_library(clientcommon INTERFACE)
+    set(CLIENTCOMMON_TARGET_SCOPE INTERFACE)
+endif()
 
-target_compile_features(clientcommon PUBLIC cxx_std_17)
+target_compile_features(clientcommon ${CLIENTCOMMON_TARGET_SCOPE} cxx_std_17)
 
 # Angle Includes
 include(cmake/include.cmake)
 
 target_include_directories(clientcommon
-    PUBLIC
+    ${CLIENTCOMMON_TARGET_SCOPE}
         ${CLIENTCOMMON_INCLUDE}
 )
 
 # DevKit Usage
-if(COMMAND devkit_finalize)
+if(CLIENTCOMMON_COMPILE_SOURCES AND COMMAND devkit_finalize)
     devkit_finalize(clientcommon)
 endif()
 
@@ -25,3 +31,7 @@ endif()
 if(UNITER_BUILD_TESTS)
     include(cmake/test.cmake)
 endif()
+
+
+
+
