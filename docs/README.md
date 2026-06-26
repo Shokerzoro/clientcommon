@@ -1,15 +1,15 @@
-# common
+# syspilot
 
-Shared client-side library for reusable code needed by the main application and
-the updater.
+Shared client-side library for reusable code needed by the main application,
+elevator, parser, and client environment management.
 
-## Submodule properties
+## Module properties
 
-Submodule: `common`
+Module: `syspilot`
 Dir type: `subproject`
 Bin type: `library`
-Target: `uniter_common`
-Alias: `uniter::common`
+Target: `uniter_syspilot`
+Alias: `uniter::syspilot`
 Hard dependencies: none
 Soft dependencies: `---`
 MVP: empty
