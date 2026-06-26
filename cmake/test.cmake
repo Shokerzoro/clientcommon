@@ -1,17 +1,17 @@
-file(GLOB_RECURSE CLIENTCOMMON_TEST_SOURCES CONFIGURE_DEPENDS
+file(GLOB_RECURSE SYSPILOT_TEST_SOURCES CONFIGURE_DEPENDS
     "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.cpp"
 )
 
-if(CLIENTCOMMON_TEST_SOURCES)
-    add_executable(clientcommon_tests
-        ${CLIENTCOMMON_TEST_SOURCES}
+if(SYSPILOT_TEST_SOURCES)
+    add_executable(syspilot_tests
+        ${SYSPILOT_TEST_SOURCES}
     )
 
-    target_link_libraries(clientcommon_tests
+    target_link_libraries(syspilot_tests
         PRIVATE
             GTest::gtest_main
-            clientcommon
+            syspilot
     )
 
-    uniter_register_gtest(clientcommon_tests)
+    uniter_register_gtest(syspilot_tests)
 endif()
