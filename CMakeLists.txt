@@ -2,29 +2,29 @@
 include(cmake/sources.cmake)
 
 # Target
-if(CLIENTCOMMON_COMPILE_SOURCES)
-    add_library(clientcommon
-        ${CLIENTCOMMON_SOURCES}
+if(SYSPILOT_COMPILE_SOURCES)
+    add_library(syspilot
+        ${SYSPILOT_SOURCES}
     )
-    set(CLIENTCOMMON_TARGET_SCOPE PUBLIC)
+    set(SYSPILOT_TARGET_SCOPE PUBLIC)
 else()
-    add_library(clientcommon INTERFACE)
-    set(CLIENTCOMMON_TARGET_SCOPE INTERFACE)
+    add_library(syspilot INTERFACE)
+    set(SYSPILOT_TARGET_SCOPE INTERFACE)
 endif()
 
-target_compile_features(clientcommon ${CLIENTCOMMON_TARGET_SCOPE} cxx_std_17)
+target_compile_features(syspilot ${SYSPILOT_TARGET_SCOPE} cxx_std_17)
 
 # Angle Includes
 include(cmake/include.cmake)
 
-target_include_directories(clientcommon
-    ${CLIENTCOMMON_TARGET_SCOPE}
-        ${CLIENTCOMMON_INCLUDE}
+target_include_directories(syspilot
+    ${SYSPILOT_TARGET_SCOPE}
+        ${SYSPILOT_INCLUDE}
 )
 
 # DevKit Usage
-if(CLIENTCOMMON_COMPILE_SOURCES AND COMMAND devkit_finalize)
-    devkit_finalize(clientcommon)
+if(SYSPILOT_COMPILE_SOURCES AND COMMAND devkit_finalize)
+    devkit_finalize(syspilot)
 endif()
 
 # Tests
