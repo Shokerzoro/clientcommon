@@ -7,7 +7,7 @@
 namespace syspilot {
 
 ChildProcess::ChildProcess(BinType type)
-    : executablePath_(Paths::instance().executable(type))
+    : executablePath_(PathResolver::instance().executable(type))
     , state_(ProcState::IDLE)
 {
 }
@@ -39,6 +39,13 @@ bool ChildProcess::run()
     process_.start(executablePath_, arguments_);
     update_state();
     return state_ == ProcState::WORKING;
+}
+
+bool ChildProcess::wait_started(int timeoutMs)
+{
+    const bool started = process_.waitForStarted(timeoutMs);
+    update_state();
+    return started && state_ == ProcState::WORKING;
 }
 
 void ChildProcess::stop()

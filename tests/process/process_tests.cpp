@@ -7,7 +7,6 @@
 
 #include <sstream>
 
-#include <process/childprocess.h>
 #include <process/process.h>
 #include <syspilot/verbose/pdfengineargs.h>
 #include <syspilot/verbose/processtypes.h>
@@ -129,9 +128,29 @@ TEST(ChildProcessTests, RunAndWaitOwnsStartedProcess)
     EXPECT_EQ(process.exit_code(), 0);
 }
 
+TEST(ChildProcessTests, WaitStartedConfirmsRunningProcess)
+{
+    syspilot::ChildProcess process(current_test_executable());
+    ASSERT_TRUE(process.add_argument(QStringLiteral("--gtest_list_tests")));
+
+    ASSERT_TRUE(process.run()) << process.error_string().toStdString();
+    EXPECT_TRUE(process.wait_started());
+    EXPECT_EQ(process.state(), syspilot::ProcState::WORKING);
+
+    EXPECT_TRUE(process.wait());
+}
+
+TEST(ChildProcessTests, WaitStartedReturnsFalseForInvalidExecutable)
+{
+    syspilot::ChildProcess process(QStringLiteral("C:/Projects/missing-executable.exe"));
+
+    EXPECT_FALSE(process.run());
+    EXPECT_FALSE(process.wait_started(10));
+}
+
 TEST(ProcessTests, InvalidPidStartsStopped)
 {
-    syspilot::Process process(-1);
+    syspilot::ProcessHandle process(-1);
 
     EXPECT_EQ(process.process_id(), -1);
     EXPECT_EQ(process.state(), syspilot::ProcState::STOPPED);
@@ -140,7 +159,7 @@ TEST(ProcessTests, InvalidPidStartsStopped)
 
 TEST(ProcessTests, CurrentPidStartsWorking)
 {
-    syspilot::Process process(QCoreApplication::applicationPid());
+    syspilot::ProcessHandle process(QCoreApplication::applicationPid());
 
     EXPECT_EQ(process.process_id(), QCoreApplication::applicationPid());
     EXPECT_EQ(process.state(), syspilot::ProcState::WORKING);
@@ -153,7 +172,7 @@ TEST(ProcessTests, WaitBlocksUntilExistingPidStops)
     ASSERT_TRUE(child.run()) << child.error_string().toStdString();
     ASSERT_GT(child.process_id(), 0);
 
-    syspilot::Process process(child.process_id());
+    syspilot::ProcessHandle process(child.process_id());
     EXPECT_EQ(process.state(), syspilot::ProcState::WORKING);
 
     EXPECT_TRUE(process.wait());
@@ -163,7 +182,7 @@ TEST(ProcessTests, WaitBlocksUntilExistingPidStops)
 
 TEST(ProcessTests, KillOnInvalidPidKeepsStopped)
 {
-    syspilot::Process process(-1);
+    syspilot::ProcessHandle process(-1);
 
     process.kill();
 
